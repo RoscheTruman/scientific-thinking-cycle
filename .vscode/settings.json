@@ -1,0 +1,41 @@
+{
+    // GitHub Copilot settings
+    "github.copilot.enable": {
+      "*": true,
+      "yaml": false,
+      "plaintext": false
+    },
+    "github.copilot.inlineSuggest.enable": true,
+  
+    // Editor settings
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.suggestSelection": "first",
+    "editor.minimap.enabled": false,
+  
+    // Terminal settings
+    "terminal.integrated.defaultProfile.linux": "bash",
+  
+    // File settings
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 1000,
+  
+    // Git settings
+    "git.autofetch": true,
+    "git.enableSmartCommit": true,
+  
+    // Language-specific settings
+    "[html]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+  
+    // Codespaces-specific settings
+    "workbench.startupEditor": "none",
+    "remote.containers.defaultExtensions": [
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode"
+    ]
+  }
