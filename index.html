@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improved Scientific Thinking Cycle Tool</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.1.2/svg.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --background-color: #f0f0f0;
+            --text-color: #333;
+            --hover-color: #004499;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            box-sizing: border-box;
+        }
+        #cycle-container, #instructions {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border: 2px solid var(--text-color);
+        }
+        #cycle-container {
+            aspect-ratio: 1/1;
+            position: relative;
+        }
+        #instructions {
+            padding: 20px;
+        }
+        .sidebar {
+            position: fixed;
+            right: -300px;
+            top: 0;
+            width: 300px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .sidebar.open {
+            right: 0;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--text-color);
+        }
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--hover-color);
+        }
+        .tooltip {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            #instructions, #cycle-container {
+                border-radius: 5px;
+            }
+            .sidebar {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="instructions">
+        <h2>Improved Scientific Thinking Cycle Tool</h2>
+        <p>This interactive tool helps you understand and apply the scientific method. Click or use keyboard navigation to explore each step of the cycle.</p>
+        <p><strong>How to use:</strong></p>
+        <ol>
+            <li>Start at the "Wonder" step and follow the cycle clockwise.</li>
+            <li>Click or press Enter on each step to open detailed information.</li>
+            <li>Use arrow keys to navigate between steps.</li>
+            <li>Press Esc to close the sidebar.</li>
+            <li>Hover over steps for quick tooltips.</li>
+        </ol>
+    </div>
+    <div id="cycle-container" role="application" aria-label="Scientific Thinking Cycle"></div>
+    <div id="sidebar" class="sidebar" aria-live="polite">
+        <button class="close-btn" aria-label="Close sidebar">&times;</button>
+        <h2 id="sidebar-title"></h2>
+        <p id="sidebar-description"></p>
+        <h3>Metacognitive Prompt:</h3>
+        <p id="sidebar-metacognitive"></p>
+        <h3>Collaborative Inquiry:</h3>
+        <p id="sidebar-collaborative"></p>
+        <h3>Nature of Science Connection:</h3>
+        <p id="sidebar-nos"></p>
+        <h3>Stuck?</h3>
+        <p id="sidebar-stuck"></p>
+    </div>
+    <div id="tooltip" class="tooltip"></div>
+    <script>
+        const cycleSteps = [
+            {name:"Wonder",color:"#FF9999",description:"Observe the world around you and identify interesting phenomena.",metacognitive:"What aspects of the world around me spark my curiosity? Why do these things interest me?",collaborative:"Share your observations with a classmate. How do their interests differ from or align with yours?",nos:"Scientists often draw inspiration from everyday observations. How does this relate to your own curiosity?",stuck:"Look around your classroom or out the window. What do you see that makes you curious? Try asking <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'What are some interesting scientific phenomena I might observe in a typical classroom?'"},
+            {name:"Question",color:"#FFCC99",description:"Formulate a specific, testable question about your observation.",metacognitive:"How can I turn my wonder into a specific, answerable question? What do I already know about this topic?",collaborative:"Discuss your question with peers. How can you refine it based on their input?",nos:"Scientific questions are specific and testable. How does your question meet these criteria?",stuck:"Use question starters like What, How, Why, When, Where, or Which. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'How can I turn this observation [your observation] into a testable scientific question?'"},
+            {name:"Hypothesis",color:"#FFFF99",description:"Propose a possible answer to your question based on prior knowledge.",metacognitive:"What do I already know that might help me predict an answer? How confident am I in this prediction?",collaborative:"Share your hypothesis with a group. How do others' hypotheses differ? Why might that be?",nos:"Hypotheses are educated guesses based on existing knowledge. How does your hypothesis reflect this?",stuck:"Try using an 'If...then...' statement to structure your hypothesis. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'Can you help me form a hypothesis for this question: [your question]?'"},
+            {name:"Experiment",color:"#CCFF99",description:"Design and conduct a fair test to investigate your hypothesis.",metacognitive:"How can I design a fair test? What variables do I need to control?",collaborative:"Work with a partner to review each other's experimental designs. What improvements can you suggest?",nos:"Experiments in science are designed to be repeatable. How does your design ensure this?",stuck:"Consider what materials are available in your classroom. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'What's a simple experiment I can do in a classroom to test this hypothesis: [your hypothesis]?'"},
+            {name:"Collect Data",color:"#99FF99",description:"Gather and record observations and measurements from your experiment.",metacognitive:"Am I recording my data accurately and precisely? How can I organize my data effectively?",collaborative:"Compare your data collection methods with a classmate. How can you ensure consistency across observers?",nos:"Scientific data should be objective and replicable. How does your data collection reflect these principles?",stuck:"Use your iPad to create a simple spreadsheet for data collection. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'What's the best way to organize data for this experiment: [brief description of your experiment]?'"},
+            {name:"Analyze",color:"#99FFCC",description:"Examine your data for patterns, trends, or relationships.",metacognitive:"What patterns do I see in my data? How confident am I in these patterns?",collaborative:"Share your initial analysis with a group. What additional insights do others provide?",nos:"Scientists use various tools and methods to analyze data. What methods are you using and why?",stuck:"Use your iPad to create a simple graph of your data. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'What kind of graph would be best to visualize this data: [brief description of your data]?'"},
+            {name:"Conclude",color:"#99FFFF",description:"Draw a conclusion based on your analysis and relate it back to your hypothesis.",metacognitive:"How well does my conclusion align with my original hypothesis? What new questions arise?",collaborative:"Engage in a structured debate about your conclusions. How do others' interpretations differ?",nos:"Scientific conclusions are based on evidence and reasoning. How does your conclusion reflect this?",stuck:"Use the claim-evidence-reasoning framework. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'Can you explain how to use the claim-evidence-reasoning framework for this conclusion: [your initial conclusion]?'"},
+            {name:"Present",color:"#99CCFF",description:"Communicate your findings to others through various means.",metacognitive:"How can I best communicate my findings? What aspects of my study are most important to highlight?",collaborative:"Practice presenting to a peer and ask for feedback. How can you improve your presentation?",nos:"Scientific communication is a crucial part of the scientific process. Why is this important?",stuck:"Use your iPad to create a simple presentation. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'What are the key elements I should include in a presentation about my scientific experiment?'"},
+            {name:"Review",color:"#CC99FF",description:"Reflect on your process and consider how to improve or extend your investigation.",metacognitive:"What worked well in my investigation? What would I do differently next time?",collaborative:"Exchange feedback with peers on each other's investigations. What can you learn from others' approaches?",nos:"Science is an iterative process. How might you build on or revise your investigation based on what you've learned?",stuck:"Create a list of 'lessons learned' from your investigation. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'Based on this experiment [brief description], what are some ways I could improve or extend this investigation?'"}
+        ];
+
+        const container = document.getElementById('cycle-container');
+        const draw = SVG().addTo(container).size('100%', '100%').viewbox(0, 0, 100, 100);
+        const centerX = 50, centerY = 50, radius = 40, nodeRadius = 9;
+        draw.circle(radius*2).fill('none').stroke({width:0.3,color:'#888'}).center(centerX, centerY);
+        
+        const nodeGroup = draw.group();
+        let activeNode = null;
+        let activeIndex = 0;
+
+        cycleSteps.forEach((step, index) => {
+            const angle = (index / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
+            const x = centerX + radius * Math.cos(angle), y = centerY + radius * Math.sin(angle);
+            
+            const circle = nodeGroup.circle(nodeRadius*2)
+                .fill(step.color)
+                .center(x, y)
+                .stroke({color:'#333',width:0.3});
+            
+            const text = nodeGroup.text(step.name)
+                .font({size:2.2,anchor:'middle'})
+                .center(x,y);
+            
+            text.build(true);
+            while (text.bbox().width > nodeRadius * 1.8) {
+                text.font({size:text.font('size')*0.9});
+            }
+            
+            const group = nodeGroup.group().add(circle).add(text);
+            
+            group.attr('role', 'button')
+                .attr('aria-label', `${step.name} step`)
+                .attr('tabindex', 0);
+            
+            group.click(() => selectNode(index));
+            group.mouseover((e) => showTooltip(e, step.description));
+            group.mouseout(hideTooltip);
+            
+            const nextIndex = (index + 1) % cycleSteps.length;
+            const nextAngle = (nextIndex / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
+            const nextX = centerX + radius * Math.cos(nextAngle), nextY = centerY + radius * Math.sin(nextAngle);
+            
+            const arrowLength = 7, arrowWidth = 2;
+            const dx = nextX - x, dy = nextY - y;
+            const distance = Math.sqrt(dx*dx + dy*dy);
+            const unitX = dx / distance, unitY = dy / distance;
+            
+            const startX = x + nodeRadius * unitX, startY = y + nodeRadius * unitY;
+            const endX = nextX - (nodeRadius + arrowWidth) * unitX, endY = nextY - (nodeRadius + arrowWidth) * unitY;
+            
+            nodeGroup.line(startX, startY, endX, endY).stroke({width:0.3,color:'#888'});
+            
+            const arrowHead = nodeGroup.polygon([
+                [endX, endY],
+                [endX - arrowWidth * (unitX + unitY), endY - arrowWidth * (unitY - unitX)],
+                [endX - arrowWidth * (unitX - unitY), endY - arrowWidth * (unitY + unitX)]
+            ]).fill('#888');
+        });
+
+        const sidebar = document.getElementById("sidebar");
+        const closeBtn = document.querySelector(".close-btn");
+
+        function selectNode(index) {
+            const step = cycleSteps[index];
+            document.getElementById("sidebar-title").textContent = step.name;
+            document.getElementById("sidebar-description").textContent = step.description;
+            document.getElementById("sidebar-metacognitive").textContent = step.metacognitive;
+            document.getElementById("sidebar-collaborative").textContent = step.collaborative;
+            document.getElementById("sidebar-nos").textContent = step.nos;
+            document.getElementById("sidebar-stuck").innerHTML = step.stuck;
+            sidebar.classList.add("open");
+            activeIndex = index;
+            updateActiveNode();
+        }
+
+        function updateActiveNode() {
+            if (activeNode) {
+                activeNode.attr('stroke', {color:'#333',width:0.3});
+            }
+            activeNode = nodeGroup.children()[activeIndex];
+            activeNode.attr('stroke', {color:'#0066cc',width:1});
+        }
+
+        function hideSidebar() {
+            sidebar.classList.remove("open");
+        }
+
+        closeBtn.onclick = hideSidebar;
+
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowRight':
+                    activeIndex = (activeIndex + 1) % cycleSteps.length;
+                    selectNode(activeIndex);
+                    break;
+                case 'ArrowLeft':
+                    activeIndex = (activeIndex - 1 + cycleSteps.length) % cycleSteps.length;
+                    selectNode(activeIndex);
+                    break;
+                case 'Enter':
+                    selectNode(activeIndex);
+                    break;
+                case 'Escape':
+                    hideSidebar();
+                    break;
+            }
+        });
+
+        function showTooltip(event, text) {
+            const tooltip = document.getElementById('tooltip');
+tooltip.textContent = text;
+            tooltip.style.left = `${event.clientX + 10}px`;
+            tooltip.style.top = `${event.clientY + 10}px`;
+            tooltip.style.opacity = 1;
+        }
+
+        function hideTooltip() {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.style.opacity = 0;
+        }
+
+        // Initialize with the first step
+        selectNode(0);
+
+        // Responsive font size adjustment
+        function adjustFontSize() {
+            const container = document.getElementById('cycle-container');
+            const computedStyle = window.getComputedStyle(container);
+            const width = parseFloat(computedStyle.width);
+            const baseFontSize = width / 50; // Adjust this ratio as needed
+            document.documentElement.style.setProperty('--base-font-size', `${baseFontSize}px`);
+        }
+
+        window.addEventListener('resize', adjustFontSize);
+        adjustFontSize(); // Initial call
+
+        // Analytics
+        function logInteraction(action, stepName) {
+            // In a real implementation, this would send data to an analytics service
+            console.log(`User ${action} step: ${stepName}`);
+        }
+
+        // Attach logInteraction to node selection
+        function selectNodeWithLogging(index) {
+            logInteraction('selected', cycleSteps[index].name);
+            selectNode(index);
+        }
+
+        // Replace previous selectNode calls with selectNodeWithLogging
+        nodeGroup.children().forEach((node, index) => {
+            node.click(() => selectNodeWithLogging(index));
+        });
+
+        // Accessibility enhancements
+        nodeGroup.children().forEach((node, index) => {
+            node.attr('aria-label', `${cycleSteps[index].name} step`)
+                .attr('role', 'button')
+                .attr('tabindex', 0);
+        });
+
+        // Keyboard navigation
+        container.addEventListener('keydown', (e) => {
+            const currentNode = nodeGroup.children()[activeIndex];
+            switch(e.key) {
+                case 'ArrowRight':
+                    e.preventDefault();
+                    selectNodeWithLogging((activeIndex + 1) % cycleSteps.length);
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    selectNodeWithLogging((activeIndex - 1 + cycleSteps.length) % cycleSteps.length);
+                    break;
+                case 'Enter':
+                case ' ':
+                    e.preventDefault();
+                    selectNodeWithLogging(activeIndex);
+                    break;
+            }
+        });
+
+        // Progressive enhancement: Add animations if browser supports it
+        if (typeof document.body.animate === 'function') {
+            nodeGroup.children().forEach((node) => {
+                node.mouseover(function() {
+                    this.animate(200).transform({ scale: 1.1 });
+                }).mouseout(function() {
+                    this.animate(200).transform({ scale: 1 });
+                });
+            });
+        }
+    </script>
+</body>
+</html>
