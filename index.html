@@ -188,7 +188,7 @@
             const startX = x + nodeRadius * unitX, startY = y + nodeRadius * unitY;
             const endX = nextX - (nodeRadius + arrowWidth) * unitX, endY = nextY - (nodeRadius + arrowWidth) * unitY;
             
-            nodeGroup.line(startX, startY, endX, endY).stroke({width:0.3,color:'#888'});
+            nodeGroup.line(startX, startY, endX, endY).stroke({width:0.3,color:'#888', opacity: 1});
             
             const arrowHead = nodeGroup.polygon([
                 [endX, endY],
