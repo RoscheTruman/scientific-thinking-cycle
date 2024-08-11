@@ -203,49 +203,35 @@
         const sidebar = document.getElementById("sidebar");
         const closeBtn = document.querySelector(".close-btn");
 
-        function selectNode(index) {
-            const step = cycleSteps[index];
-            document.getElementById("sidebar-title").textContent = step.name;
-            document.getElementById("sidebar-description").textContent = step.description;
-            document.getElementById("sidebar-metacognitive").textContent = step.metacognitive;
-            document.getElementById("sidebar-collaborative").textContent = step.collaborative;
-            document.getElementById("sidebar-nos").textContent = step.nos;
-            document.getElementById("sidebar-stuck").innerHTML = step.stuck;
-            updateActiveNode();
-            sidebar.classList.add("open");
-            const sidebarTitle = document.getElementById("sidebar-title");
-            const sidebarDescription = document.getElementById("sidebar-description");
-            const sidebarMetacognitive = document.getElementById("sidebar-metacognitive");
-            const sidebarCollaborative = document.getElementById("sidebar-collaborative");
-            const sidebarNos = document.getElementById("sidebar-nos");
-            const sidebarStuck = document.getElementById("sidebar-stuck");
+    function selectNode(index) {
+        activeIndex = index; // Ensure activeIndex is updated first
+        const step = cycleSteps[activeIndex];
+        document.getElementById("sidebar-title").textContent = step.name;
+        document.getElementById("sidebar-description").textContent = step.description;
+        document.getElementById("sidebar-metacognitive").textContent = step.metacognitive;
+        document.getElementById("sidebar-collaborative").textContent = step.collaborative;
+        document.getElementById("sidebar-nos").textContent = step.nos;
+        document.getElementById("sidebar-stuck").innerHTML = step.stuck;
+        sidebar.classList.add("open");
+        updateActiveNode(); // Ensure the border is updated
+    }
 
-            sidebarTitle.textContent = cycleSteps[activeIndex].name;
-            sidebarDescription.textContent = cycleSteps[activeIndex].description;
-            sidebarMetacognitive.textContent = cycleSteps[activeIndex].metacognitive;
-            sidebarCollaborative.textContent = cycleSteps[activeIndex].collaborative;
-            sidebarNos.textContent = cycleSteps[activeIndex].nos;
-            sidebarStuck.innerHTML = cycleSteps[activeIndex].stuck;
-            activeIndex = index;
-            updateActiveNode();
+    function updateActiveNode() {
+        if (activeNode) {
+            activeNode.attr('stroke', {color:'#333',width:0.3});
         }
+        activeNode = nodeGroup.children()[activeIndex];
+        activeNode.attr('stroke', {color:'#0066cc',width:1});
+    }
 
-        function updateActiveNode() {
-            if (activeNode) {
-                activeNode.attr('stroke', {color:'#333',width:0.3});
-            }
-            activeNode = nodeGroup.children()[activeIndex];
-            activeNode.attr('stroke', {color:'#0066cc',width:1});
-        }
+    function hideSidebar() {
+        sidebar.classList.remove("open");
+    }
 
-        function hideSidebar() {
-            sidebar.classList.remove("open");
-        }
+    closeBtn.onclick = hideSidebar;
 
-        closeBtn.onclick = hideSidebar;
-
-        document.addEventListener('keydown', (e) => {
-            switch(e.key) {
+    document.addEventListener('keydown', (e) => {
+        switch(e.key) {
             case 'ArrowRight':
                 activeIndex = (activeIndex + 1) % cycleSteps.length;
                 selectNode(activeIndex);
@@ -257,12 +243,9 @@
             case 'Enter':
                 selectNode(activeIndex);
                 break;
-            case 'Escape':
-                hideSidebar();
-                break;
-            }
-        });
-
+        }
+    });
+    
         function showTooltip(event, text) {
             const tooltip = document.getElementById('tooltip');
 tooltip.textContent = text;
