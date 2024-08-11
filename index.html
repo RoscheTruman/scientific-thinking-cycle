@@ -151,78 +151,89 @@
         let activeNode = null;
         let activeIndex = 0;
 
-        cycleSteps.forEach((step, index) => {
-            const angle = (index / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
-            const x = centerX + radius * Math.cos(angle), y = centerY + radius * Math.sin(angle);
-            
-            const circle = nodeGroup.circle(nodeRadius*2)
-                .fill(step.color)
-                .center(x, y)
-                .stroke({color:'#333',width:0.3});
-            
-            const text = nodeGroup.text(step.name)
-                .font({size:2.2,anchor:'middle'})
-                .center(x,y);
-            
-            text.build(true);
-            while (text.bbox().width > nodeRadius * 1.8) {
-                text.font({size:text.font('size')*0.9});
-            }
-            
-            const group = nodeGroup.group().add(circle).add(text);
-            
-            group.attr('role', 'button')
-                .attr('aria-label', `${step.name} step`)
-                .attr('tabindex', 0);
-            
-            group.click(() => selectNode(index));
-            group.mouseover((e) => showTooltip(e, step.description));
-            group.mouseout(hideTooltip);
-            
-            const nextIndex = (index + 1) % cycleSteps.length;
-            const nextAngle = (nextIndex / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
-            const nextX = centerX + radius * Math.cos(nextAngle), nextY = centerY + radius * Math.sin(nextAngle);
-            
-            const arrowLength = 7, arrowWidth = 2;
-            const dx = nextX - x, dy = nextY - y;
-            const distance = Math.sqrt(dx*dx + dy*dy);
-            const unitX = dx / distance, unitY = dy / distance;
-            
-            const startX = x + nodeRadius * unitX, startY = y + nodeRadius * unitY;
-            const endX = nextX - (nodeRadius + arrowWidth) * unitX, endY = nextY - (nodeRadius + arrowWidth) * unitY;
-            
-            nodeGroup.line(startX, startY, endX, endY).stroke({width:0.3,color:'#888'});
-            
-            const arrowHead = nodeGroup.polygon([
-                [endX, endY],
-                [endX - arrowWidth * (unitX + unitY), endY - arrowWidth * (unitY - unitX)],
-                [endX - arrowWidth * (unitX - unitY), endY - arrowWidth * (unitY + unitX)]
-            ]).fill('#888');
-        });
+cycleSteps.forEach((step, index) => {
+    const angle = (index / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
+    const x = centerX + radius * Math.cos(angle), y = centerY + radius * Math.sin(angle);
+    
+    const circle = nodeGroup.circle(nodeRadius*2)
+        .fill(step.color)
+        .center(x, y)
+        .stroke({color:'#333',width:0.3});
+    
+    const text = nodeGroup.text(step.name)
+        .font({size:2.2,anchor:'middle'})
+        .center(x,y);
+    
+    text.build(true);
+    while (text.bbox().width > nodeRadius * 1.8) {
+        text.font({size:text.font('size')*0.9});
+    }
+    
+    const group = nodeGroup.group().add(circle).add(text);
+    
+    group.attr('role', 'button')
+        .attr('aria-label', `${step.name} step`)
+        .attr('tabindex', 0);
+    
+    group.click(() => selectNode(index));
+    group.mouseover((e) => showTooltip(e, step.description));
+    group.mouseout(hideTooltip);
+    
+    const nextIndex = (index + 1) % cycleSteps.length;
+    const nextAngle = (nextIndex / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
+    const nextX = centerX + radius * Math.cos(nextAngle), nextY = centerY + radius * Math.sin(nextAngle);
+    
+    const arrowLength = 7, arrowWidth = 2;
+    const dx = nextX - x, dy = nextY - y;
+    const distance = Math.sqrt(dx*dx + dy*dy);
+    const unitX = dx / distance, unitY = dy / distance;
+    
+    const startX = x + nodeRadius * unitX, startY = y + nodeRadius * unitY;
+    const endX = nextX - (nodeRadius + arrowWidth) * unitX, endY = nextY - (nodeRadius + arrowWidth) * unitY;
+    
+    nodeGroup.line(startX, startY, endX, endY).stroke({width:0.3,color:'#888'});
+    
+    const arrowHead = nodeGroup.polygon([
+        [endX, endY],
+        [endX - arrowWidth * (unitX + unitY), endY - arrowWidth * (unitY - unitX)],
+        [endX - arrowWidth * (unitX - unitY), endY - arrowWidth * (unitY + unitX)]
+    ]).fill('#888');
+});
 
         const sidebar = document.getElementById("sidebar");
         const closeBtn = document.querySelector(".close-btn");
 
-    function selectNode(index) {
-        activeIndex = index; // Ensure activeIndex is updated first
-        const step = cycleSteps[activeIndex];
-        document.getElementById("sidebar-title").textContent = step.name;
-        document.getElementById("sidebar-description").textContent = step.description;
-        document.getElementById("sidebar-metacognitive").textContent = step.metacognitive;
-        document.getElementById("sidebar-collaborative").textContent = step.collaborative;
-        document.getElementById("sidebar-nos").textContent = step.nos;
-        document.getElementById("sidebar-stuck").innerHTML = step.stuck;
-        sidebar.classList.add("open");
-        updateActiveNode(); // Ensure the border is updated
-    }
+function selectNode(index) {
+    activeIndex = index;
+    const step = cycleSteps[activeIndex];
+    document.getElementById("sidebar-title").textContent = step.name;
+    document.getElementById("sidebar-description").textContent = step.description;
+    document.getElementById("sidebar-metacognitive").textContent = step.metacognitive;
+    document.getElementById("sidebar-collaborative").textContent = step.collaborative;
+    document.getElementById("sidebar-nos").textContent = step.nos;
+    document.getElementById("sidebar-stuck").innerHTML = step.stuck;
+    sidebar.classList.add("open");
+    updateActiveNode();
+}
 
-    function updateActiveNode() {
-        if (activeNode) {
-            activeNode.attr('stroke', {color:'#333',width:0.3});
+let interactionCount = 0;
+
+function hideArrows() {
+    if (interactionCount >= 3) {
+        for (let i = 0; i < 3; i++) {
+            const arrowIndex = nodeGroup.children().length - 1 - i;
+            nodeGroup.children()[arrowIndex].hide();
         }
-        activeNode = nodeGroup.children()[activeIndex];
-        activeNode.attr('stroke', {color:'#0066cc',width:1});
     }
+}
+
+function updateActiveNode() {
+    nodeGroup.children().forEach((node, i) => {
+        const circle = node.children()[0];
+        const stroke = i === activeIndex ? { color: '#0066cc', width: 1.5 } : { color: '#333', width: 0.3 };
+        circle.stroke(stroke);
+    });
+}
 
     function hideSidebar() {
         sidebar.classList.remove("open");
@@ -245,7 +256,7 @@
                 break;
         }
     });
-    
+
         function showTooltip(event, text) {
             const tooltip = document.getElementById('tooltip');
 tooltip.textContent = text;
@@ -281,10 +292,12 @@ tooltip.textContent = text;
         }
 
         // Attach logInteraction to node selection
-        function selectNodeWithLogging(index) {
-            logInteraction('selected', cycleSteps[index].name);
-            selectNode(index);
-        }
+function selectNodeWithLogging(index) {
+    logInteraction('selected', cycleSteps[index].name);
+    selectNode(index);
+    interactionCount++;
+    hideArrows();
+}
 
         // Replace previous selectNode calls with selectNodeWithLogging
         nodeGroup.children().forEach((node, index) => {
