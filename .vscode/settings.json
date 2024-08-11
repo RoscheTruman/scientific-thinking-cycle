@@ -5,7 +5,6 @@
       "yaml": false,
       "plaintext": false
     },
-    "github.copilot.inlineSuggest.enable": true,
   
     // Editor settings
     "editor.formatOnSave": true,
@@ -37,5 +36,6 @@
     "remote.containers.defaultExtensions": [
       "dbaeumer.vscode-eslint",
       "esbenp.prettier-vscode"
-    ]
+    ],
+    "github.copilot.editor.enableAutoCompletions": true
   }

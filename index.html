@@ -96,6 +96,9 @@
                 right: -100%;
             }
         }
+        .selected {
+            border: 2px solid blue;
+        }
     </style>
 </head>
 <body>
@@ -229,20 +232,20 @@
 
         document.addEventListener('keydown', (e) => {
             switch(e.key) {
-                case 'ArrowRight':
-                    activeIndex = (activeIndex + 1) % cycleSteps.length;
-                    selectNode(activeIndex);
-                    break;
-                case 'ArrowLeft':
-                    activeIndex = (activeIndex - 1 + cycleSteps.length) % cycleSteps.length;
-                    selectNode(activeIndex);
-                    break;
-                case 'Enter':
-                    selectNode(activeIndex);
-                    break;
-                case 'Escape':
-                    hideSidebar();
-                    break;
+            case 'ArrowRight':
+                activeIndex = (activeIndex + 1) % cycleSteps.length;
+                selectNode(activeIndex);
+                break;
+            case 'ArrowLeft':
+                activeIndex = (activeIndex - 1 + cycleSteps.length) % cycleSteps.length;
+                selectNode(activeIndex);
+                break;
+            case 'Enter':
+                selectNode(activeIndex);
+                break;
+            case 'Escape':
+                hideSidebar();
+                break;
             }
         });
 
