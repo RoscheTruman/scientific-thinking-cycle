@@ -211,7 +211,21 @@
             document.getElementById("sidebar-collaborative").textContent = step.collaborative;
             document.getElementById("sidebar-nos").textContent = step.nos;
             document.getElementById("sidebar-stuck").innerHTML = step.stuck;
+            updateActiveNode();
             sidebar.classList.add("open");
+            const sidebarTitle = document.getElementById("sidebar-title");
+            const sidebarDescription = document.getElementById("sidebar-description");
+            const sidebarMetacognitive = document.getElementById("sidebar-metacognitive");
+            const sidebarCollaborative = document.getElementById("sidebar-collaborative");
+            const sidebarNos = document.getElementById("sidebar-nos");
+            const sidebarStuck = document.getElementById("sidebar-stuck");
+
+            sidebarTitle.textContent = cycleSteps[activeIndex].name;
+            sidebarDescription.textContent = cycleSteps[activeIndex].description;
+            sidebarMetacognitive.textContent = cycleSteps[activeIndex].metacognitive;
+            sidebarCollaborative.textContent = cycleSteps[activeIndex].collaborative;
+            sidebarNos.textContent = cycleSteps[activeIndex].nos;
+            sidebarStuck.innerHTML = cycleSteps[activeIndex].stuck;
             activeIndex = index;
             updateActiveNode();
         }
