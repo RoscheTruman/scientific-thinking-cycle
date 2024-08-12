@@ -191,54 +191,45 @@ cycleSteps.forEach((step, index) => {
     group.click(() => selectNodeWithLogging(index));
     group.mouseover((e) => showTooltip(e, step.description));
     group.mouseout(hideTooltip);
-    
-    drawArrow(index);
 });
+
+function createArrows() {
+    const arrowSize = 3;
+    cycleSteps.forEach((_, index) => {
+        createArrows();
+        const angle = ((index + 0.5) / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
+        const x = centerX + (radius + 1) * Math.cos(angle);
+        const y = centerY + (radius + 1) * Math.sin(angle);
         
-function drawArrow(index) {
-    const currentAngle = (index / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
-    const nextAngle = ((index + 1) % cycleSteps.length / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
-    const midAngle = (currentAngle + nextAngle) / 2;
-    
-    const arrowLength = 10;
-    const x1 = centerX + (radius - arrowLength/2) * Math.cos(midAngle);
-    const y1 = centerY + (radius - arrowLength/2) * Math.sin(midAngle);
-    const x2 = centerX + (radius + arrowLength/2) * Math.cos(midAngle);
-    const y2 = centerY + (radius + arrowLength/2) * Math.sin(midAngle);
-    
-    const arrow = arrowGroup.group();
-    arrow.line(x1, y1, x2, y2).stroke({width: 0.5, color: '#888'});
-
-    const arrowHeadSize = 2;
-    const arrowHead = arrow.polygon([
-        [x2, y2],
-        [x2 - arrowHeadSize * Math.cos(midAngle - Math.PI/6), y2 - arrowHeadSize * Math.sin(midAngle - Math.PI/6)],
-        [x2 - arrowHeadSize * Math.cos(midAngle + Math.PI/6), y2 - arrowHeadSize * Math.sin(midAngle + Math.PI/6)]
-    ]).fill('#888');
+        arrowGroup.polygon([
+            [x, y],
+            [x - arrowSize * Math.cos(angle - Math.PI/6), y - arrowSize * Math.sin(angle - Math.PI/6)],
+            [x - arrowSize * Math.cos(angle + Math.PI/6), y - arrowSize * Math.sin(angle + Math.PI/6)]
+        ]).fill('#888').rotate(180, x, y);
+    });
 }
-
+        
 function adjustLayout() {
     const container = document.getElementById('cycle-container');
     const sidebar = document.getElementById('sidebar');
     const isSidebarOpen = sidebar.classList.contains('open');
     
     if (isSidebarOpen) {
-        container.style.marginRight = '300px'; // Adjust based on sidebar width
+        container.style.marginRight = '300px';
     } else {
         container.style.marginRight = '0';
     }
 }
 
-// Call this function when opening/closing the sidebar
 function toggleSidebar() {
     sidebar.classList.toggle('open');
     adjustLayout();
 }
 
-// Initial call
+        closeBtn.onclick = () => toggleSidebar();
+        
 adjustLayout();
 
-// Attach to window resize
 window.addEventListener('resize', adjustLayout);
         
 function selectNode(index) {
@@ -272,13 +263,6 @@ function hideArrows() {
     if (interactionCount >= 3) {
         arrowGroup.children().forEach(arrow => arrow.hide());
     }
-}
-
-function selectNodeWithLogging(index) {
-    logInteraction('selected', cycleSteps[index].name);
-    selectNode(index);
-    interactionCount++;
-    hideArrows();
 }
 
 function showTooltip(event, text) {
@@ -335,73 +319,32 @@ tooltip.textContent = text;
             tooltip.style.opacity = 0;
         }
 
-        // Responsive font size adjustment
         function adjustFontSize() {
             const container = document.getElementById('cycle-container');
             const computedStyle = window.getComputedStyle(container);
             const width = parseFloat(computedStyle.width);
-            const baseFontSize = width / 50; // Adjust this ratio as needed
+            const baseFontSize = width / 50;
             document.documentElement.style.setProperty('--base-font-size', `${baseFontSize}px`);
         }
 
         window.addEventListener('resize', adjustFontSize);
-        adjustFontSize(); // Initial call
+        adjustFontSize();
 
-        // Analytics - WIP
         function logInteraction(action, stepName) {
             console.log(`User ${action} step: ${stepName}`);
         }
 
-        // Attach logInteraction to node selection
 function selectNodeWithLogging(index) {
     logInteraction('selected', cycleSteps[index].name);
     selectNode(index);
-    updateActiveNode();
+    adjustLayout();
 }
 
-        // Replace previous selectNode calls with selectNodeWithLogging
-        nodeGroup.children().forEach((node, index) => {
-            node.click(() => selectNodeWithLogging(index));
-        });
-
-        // Accessibility enhancements
-        nodeGroup.children().forEach((node, index) => {
-            node.attr('aria-label', `${cycleSteps[index].name} step`)
-                .attr('role', 'button')
-                .attr('tabindex', 0);
-        });
-
-        // Keyboard navigation
-        container.addEventListener('keydown', (e) => {
-            const currentNode = nodeGroup.children()[activeIndex];
-            switch(e.key) {
-                case 'ArrowRight':
-                    e.preventDefault();
-                    selectNodeWithLogging((activeIndex + 1) % cycleSteps.length);
-                    break;
-                case 'ArrowLeft':
-                    e.preventDefault();
-                    selectNodeWithLogging((activeIndex - 1 + cycleSteps.length) % cycleSteps.length);
-                    break;
-                case 'Enter':
-                case ' ':
-                    e.preventDefault();
-                    selectNodeWithLogging(activeIndex);
-                    break;
-            }
-        });
-
-        // Progressive enhancement: Add animations if browser supports it
 if (typeof document.body.animate === 'function') {
     nodeGroup.children().forEach((node) => {
-        let isHovered = false;
         node.on('mouseenter', function() {
-            if (!isHovered) {
-                isHovered = true;
-                this.animate(200).transform({ scale: 1.1 }, true);
-            }
+            this.animate(200).transform({ scale: 1.1 }, true);
         }).on('mouseleave', function() {
-            isHovered = false;
             this.animate(200).transform({ scale: 1 }, true);
         });
     });
