@@ -142,14 +142,14 @@
             {name:"Review",color:"#CC99FF",description:"Reflect on your process and consider how to improve or extend your investigation.",metacognitive:"What worked well in my investigation? What would I do differently next time?",collaborative:"Exchange feedback with peers on each other's investigations. What can you learn from others' approaches?",nos:"Science is an iterative process. How might you build on or revise your investigation based on what you've learned?",stuck:"Create a list of 'lessons learned' from your investigation. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'Based on this experiment [brief description], what are some ways I could improve or extend this investigation?'"}
         ];
 
-        const container = document.getElementById('cycle-container');
-        const draw = SVG().addTo(container).size('100%', '100%').viewbox(0, 0, 100, 100);
-        const centerX = 50, centerY = 50, radius = 40, nodeRadius = 9;
-        draw.circle(radius*2).fill('none').stroke({width:0.3,color:'#888'}).center(centerX, centerY);
-        
-        const nodeGroup = draw.group();
-        let activeNode = null;
-        let activeIndex = 0;
+const container = document.getElementById('cycle-container');
+const draw = SVG().addTo(container).size('100%', '100%').viewbox(0, 0, 100, 100);
+const centerX = 50, centerY = 50, radius = 40, nodeRadius = 9;
+draw.circle(radius*2).fill('none').stroke({width:0.3,color:'#888'}).center(centerX, centerY);
+
+const nodeGroup = draw.group();
+let activeIndex = null;
+let interactionCount = 0;
 
 cycleSteps.forEach((step, index) => {
     const angle = (index / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
@@ -175,35 +175,35 @@ cycleSteps.forEach((step, index) => {
         .attr('aria-label', `${step.name} step`)
         .attr('tabindex', 0);
     
-    group.click(() => selectNode(index));
+    group.click(() => selectNodeWithLogging(index));
     group.mouseover((e) => showTooltip(e, step.description));
     group.mouseout(hideTooltip);
     
-    const nextIndex = (index + 1) % cycleSteps.length;
-    const nextAngle = (nextIndex / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
-    const nextX = centerX + radius * Math.cos(nextAngle), nextY = centerY + radius * Math.sin(nextAngle);
+    drawArrow(index);
+});
+
+function drawArrow(index) {
+    const currentAngle = (index / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
+    const nextAngle = ((index + 1) / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
+    const x1 = centerX + radius * Math.cos(currentAngle), y1 = centerY + radius * Math.sin(currentAngle);
+    const x2 = centerX + radius * Math.cos(nextAngle), y2 = centerY + radius * Math.sin(nextAngle);
     
-    const arrowLength = 7, arrowWidth = 2;
-    const dx = nextX - x, dy = nextY - y;
+    const dx = x2 - x1, dy = y2 - y1;
     const distance = Math.sqrt(dx*dx + dy*dy);
     const unitX = dx / distance, unitY = dy / distance;
     
-    const startX = x + nodeRadius * unitX, startY = y + nodeRadius * unitY;
-    const endX = nextX - (nodeRadius + arrowWidth) * unitX, endY = nextY - (nodeRadius + arrowWidth) * unitY;
+    const startX = x1 + nodeRadius * unitX, startY = y1 + nodeRadius * unitY;
+    const endX = x2 - nodeRadius * unitX, endY = y2 - nodeRadius * unitY;
     
-    nodeGroup.line(startX, startY, endX, endY).stroke({width:0.3,color:'#888'});
+    const arrow = nodeGroup.group();
+    arrow.line(startX, startY, endX, endY).stroke({width:0.3,color:'#888'});
     
-    const arrowHead = nodeGroup.polygon([
+    const arrowHead = arrow.polygon([
         [endX, endY],
-        [endX - arrowWidth * (unitX + unitY), endY - arrowWidth * (unitY - unitX)],
-        [endX - arrowWidth * (unitX - unitY), endY - arrowWidth * (unitY + unitX)]
+        [endX - 2 * (unitX + unitY), endY - 2 * (unitY - unitX)],
+        [endX - 2 * (unitX - unitY), endY - 2 * (unitY + unitX)]
     ]).fill('#888');
-});
-
-let activeIndex = null;
-        
-        const sidebar = document.getElementById("sidebar");
-        const closeBtn = document.querySelector(".close-btn");
+}
 
 function selectNode(index) {
     activeIndex = index;
@@ -218,7 +218,18 @@ function selectNode(index) {
     updateActiveNode();
 }
 
-let interactionCount = 0;
+function updateActiveNode() {
+    nodeGroup.children().forEach((node, i) => {
+        if (node.type === 'g' && node.children().length > 0) {
+            const circle = node.children()[0];
+            if (i === activeIndex) {
+                circle.stroke({ color: '#000000', width: 1.5 });
+            } else {
+                circle.stroke({ color: '#333', width: 0.3 });
+            }
+        }
+    });
+}
 
 function hideArrows() {
     if (interactionCount >= 3) {
@@ -229,22 +240,29 @@ function hideArrows() {
     }
 }
 
-function updateActiveNode() {
-    nodeGroup.children().forEach((node, i) => {
-        const circle = node.children()[0];
-        if (i === activeIndex) {
-            circle.stroke({ color: '#000000', width: 1.5 });
-        } else {
-            circle.stroke({ color: '#333', width: 0.3 });
-        }
-    });
+function selectNodeWithLogging(index) {
+    logInteraction('selected', cycleSteps[index].name);
+    selectNode(index);
+    interactionCount++;
+    hideArrows();
 }
 
-    function hideSidebar() {
-        sidebar.classList.remove("open");
-    }
+function showTooltip(event, text) {
+    const tooltip = document.getElementById('tooltip');
+    tooltip.textContent = text;
+    tooltip.style.left = `${event.clientX + 10}px`;
+    tooltip.style.top = `${event.clientY + 10}px`;
+    tooltip.style.opacity = 1;
+}
 
-    closeBtn.onclick = hideSidebar;
+function hideTooltip() {
+    const tooltip = document.getElementById('tooltip');
+    tooltip.style.opacity = 0;
+}
+
+function logInteraction(action, stepName) {
+    console.log(`User ${action} step: ${stepName}`);
+}
 
 container.addEventListener('keydown', (e) => {
     switch(e.key) {
@@ -268,6 +286,10 @@ container.addEventListener('keydown', (e) => {
     }
 });
 
+const sidebar = document.getElementById("sidebar");
+const closeBtn = document.querySelector(".close-btn");
+closeBtn.onclick = () => sidebar.classList.remove("open");
+
         function showTooltip(event, text) {
             const tooltip = document.getElementById('tooltip');
 tooltip.textContent = text;
@@ -281,9 +303,6 @@ tooltip.textContent = text;
             tooltip.style.opacity = 0;
         }
 
-        // Initialize with the first step
-        selectNode(0);
-
         // Responsive font size adjustment
         function adjustFontSize() {
             const container = document.getElementById('cycle-container');
@@ -296,9 +315,8 @@ tooltip.textContent = text;
         window.addEventListener('resize', adjustFontSize);
         adjustFontSize(); // Initial call
 
-        // Analytics
+        // Analytics - WIP
         function logInteraction(action, stepName) {
-            // In a real implementation, this would send data to an analytics service
             console.log(`User ${action} step: ${stepName}`);
         }
 
