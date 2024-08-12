@@ -99,6 +99,18 @@
         .selected {
             border: 2px solid blue;
         }
+        #cycle-container * {
+    outline: none;
+}
+
+.node-group circle {
+    transition: stroke-width 0.2s, stroke 0.2s;
+}
+
+.node-group circle:focus {
+    stroke-width: 1.5;
+    stroke: #000000;
+}
     </style>
 </head>
 <body>
@@ -182,6 +194,9 @@ cycleSteps.forEach((step, index) => {
     drawArrow(index);
 });
 
+const arrowGroup = draw.group().attr('class', 'arrow-group');
+const nodeGroup = draw.group().attr('class', 'node-group');
+        
 function drawArrow(index) {
     const currentAngle = (index / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
     const nextAngle = ((index + 1) / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
@@ -196,14 +211,25 @@ function drawArrow(index) {
     const endX = x2 - nodeRadius * unitX, endY = y2 - nodeRadius * unitY;
     
     const arrow = nodeGroup.group();
-    arrow.line(startX, startY, endX, endY).stroke({width:0.3,color:'#888'});
+        arrow.line(startX, startY, endX, endY).stroke({width:0.3,color:'#888'});
     
     const arrowHead = arrow.polygon([
         [endX, endY],
         [endX - 2 * (unitX + unitY), endY - 2 * (unitY - unitX)],
         [endX - 2 * (unitX - unitY), endY - 2 * (unitY + unitX)]
-    ]).fill('#888');
+        ]).fill('#888');
+    
+    const arrow = arrowGroup.group();
+        arrow.line(startX, startY, endX, endY).stroke({width:0.3,color:'#888'});
+
+    const arrowHead = arrow.polygon([
+        [endX, endY],
+        [endX - 2 * (unitX + unitY), endY - 2 * (unitY - unitX)],
+        [endX - 2 * (unitX - unitY), endY - 2 * (unitY + unitX)]
+        ]).fill('#888');
+    }
 }
+
 
 function selectNode(index) {
     activeIndex = index;
@@ -224,6 +250,7 @@ function updateActiveNode() {
             const circle = node.children()[0];
             if (i === activeIndex) {
                 circle.stroke({ color: '#000000', width: 1.5 });
+                circle.node.focus();
             } else {
                 circle.stroke({ color: '#333', width: 0.3 });
             }
@@ -233,10 +260,7 @@ function updateActiveNode() {
 
 function hideArrows() {
     if (interactionCount >= 3) {
-        for (let i = 0; i < 3; i++) {
-            const arrowIndex = nodeGroup.children().length - 1 - i;
-            nodeGroup.children()[arrowIndex].hide();
-        }
+        arrowGroup.hide();
     }
 }
 
