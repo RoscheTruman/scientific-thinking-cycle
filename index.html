@@ -159,7 +159,8 @@ const draw = SVG().addTo(container).size('100%', '100%').viewbox(0, 0, 100, 100)
 const centerX = 50, centerY = 50, radius = 40, nodeRadius = 9;
 draw.circle(radius*2).fill('none').stroke({width:0.3,color:'#888'}).center(centerX, centerY);
 
-const nodeGroup = draw.group();
+const nodeGroup = draw.group().attr('class', 'node-group');
+const arrowGroup = draw.group().attr('class', 'arrow-group');
 let activeIndex = null;
 let interactionCount = 0;
 
@@ -193,9 +194,6 @@ cycleSteps.forEach((step, index) => {
     
     drawArrow(index);
 });
-
-const arrowGroup = draw.group().attr('class', 'arrow-group');
-const nodeGroup = draw.group().attr('class', 'node-group');
         
 function drawArrow(index) {
     const currentAngle = (index / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
@@ -210,24 +208,14 @@ function drawArrow(index) {
     const startX = x1 + nodeRadius * unitX, startY = y1 + nodeRadius * unitY;
     const endX = x2 - nodeRadius * unitX, endY = y2 - nodeRadius * unitY;
     
-    const arrow = nodeGroup.group();
-        arrow.line(startX, startY, endX, endY).stroke({width:0.3,color:'#888'});
-    
-    const arrowHead = arrow.polygon([
-        [endX, endY],
-        [endX - 2 * (unitX + unitY), endY - 2 * (unitY - unitX)],
-        [endX - 2 * (unitX - unitY), endY - 2 * (unitY + unitX)]
-        ]).fill('#888');
-    
     const arrow = arrowGroup.group();
-        arrow.line(startX, startY, endX, endY).stroke({width:0.3,color:'#888'});
+    arrow.line(startX, startY, endX, endY).stroke({width:0.3,color:'#888'});
 
     const arrowHead = arrow.polygon([
         [endX, endY],
         [endX - 2 * (unitX + unitY), endY - 2 * (unitY - unitX)],
         [endX - 2 * (unitX - unitY), endY - 2 * (unitY + unitX)]
-        ]).fill('#888');
-    }
+    ]).fill('#888');
 }
 
 
@@ -260,7 +248,7 @@ function updateActiveNode() {
 
 function hideArrows() {
     if (interactionCount >= 3) {
-        arrowGroup.hide();
+        arrowGroup.children().forEach(arrow => arrow.hide());
     }
 }
 
