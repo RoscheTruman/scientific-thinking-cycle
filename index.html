@@ -198,23 +198,22 @@ cycleSteps.forEach((step, index) => {
 function drawArrow(index) {
     const currentAngle = (index / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
     const nextAngle = ((index + 1) / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
-    const x1 = centerX + radius * Math.cos(currentAngle), y1 = centerY + radius * Math.sin(currentAngle);
-    const x2 = centerX + radius * Math.cos(nextAngle), y2 = centerY + radius * Math.sin(nextAngle);
+    const midAngle = (currentAngle + nextAngle) / 2;
     
-    const dx = x2 - x1, dy = y2 - y1;
-    const distance = Math.sqrt(dx*dx + dy*dy);
-    const unitX = dx / distance, unitY = dy / distance;
-    
-    const startX = x1 + nodeRadius * unitX, startY = y1 + nodeRadius * unitY;
-    const endX = x2 - nodeRadius * unitX, endY = y2 - nodeRadius * unitY;
+    const arrowLength = 10;
+    const x1 = centerX + (radius - arrowLength/2) * Math.cos(midAngle);
+    const y1 = centerY + (radius - arrowLength/2) * Math.sin(midAngle);
+    const x2 = centerX + (radius + arrowLength/2) * Math.cos(midAngle);
+    const y2 = centerY + (radius + arrowLength/2) * Math.sin(midAngle);
     
     const arrow = arrowGroup.group();
-    arrow.line(startX, startY, endX, endY).stroke({width:0.3,color:'#888'});
+    arrow.line(x1, y1, x2, y2).stroke({width: 0.5, color: '#888'});
 
+    const arrowHeadSize = 2;
     const arrowHead = arrow.polygon([
-        [endX, endY],
-        [endX - 2 * (unitX + unitY), endY - 2 * (unitY - unitX)],
-        [endX - 2 * (unitX - unitY), endY - 2 * (unitY + unitX)]
+        [x2, y2],
+        [x2 - arrowHeadSize * Math.cos(midAngle - Math.PI/6), y2 - arrowHeadSize * Math.sin(midAngle - Math.PI/6)],
+        [x2 - arrowHeadSize * Math.cos(midAngle + Math.PI/6), y2 - arrowHeadSize * Math.sin(midAngle + Math.PI/6)]
     ]).fill('#888');
 }
 
@@ -277,23 +276,21 @@ function logInteraction(action, stepName) {
 }
 
 container.addEventListener('keydown', (e) => {
+    if (activeIndex === null) activeIndex = 0;
+    
     switch(e.key) {
         case 'ArrowRight':
             e.preventDefault();
-            activeIndex = (activeIndex === null) ? 0 : (activeIndex + 1) % cycleSteps.length;
-            updateActiveNode();
+            selectNodeWithLogging((activeIndex + 1) % cycleSteps.length);
             break;
         case 'ArrowLeft':
             e.preventDefault();
-            activeIndex = (activeIndex === null) ? cycleSteps.length - 1 : (activeIndex - 1 + cycleSteps.length) % cycleSteps.length;
-            updateActiveNode();
+            selectNodeWithLogging((activeIndex - 1 + cycleSteps.length) % cycleSteps.length);
             break;
         case 'Enter':
         case ' ':
             e.preventDefault();
-            if (activeIndex !== null) {
-                selectNodeWithLogging(activeIndex);
-            }
+            selectNodeWithLogging(activeIndex);
             break;
     }
 });
@@ -336,8 +333,6 @@ tooltip.textContent = text;
 function selectNodeWithLogging(index) {
     logInteraction('selected', cycleSteps[index].name);
     selectNode(index);
-    interactionCount++;
-    hideArrows();
     updateActiveNode();
 }
 
@@ -374,15 +369,15 @@ function selectNodeWithLogging(index) {
         });
 
         // Progressive enhancement: Add animations if browser supports it
-        if (typeof document.body.animate === 'function') {
-            nodeGroup.children().forEach((node) => {
-                node.mouseover(function() {
-                    this.animate(200).transform({ scale: 1.1 });
-                }).mouseout(function() {
-                    this.animate(200).transform({ scale: 1 });
-                });
-            });
-        }
+if (typeof document.body.animate === 'function') {
+    nodeGroup.children().forEach((node) => {
+        node.on('mouseenter', function() {
+            this.animate(200).transform({ scale: 1.1 }, true);
+        }).on('mouseleave', function() {
+            this.animate(200).transform({ scale: 1 }, true);
+        });
+    });
+}
     </script>
 </body>
 </html>
