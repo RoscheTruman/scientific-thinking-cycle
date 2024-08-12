@@ -196,7 +196,6 @@ cycleSteps.forEach((step, index) => {
 function createArrows() {
     const arrowSize = 3;
     cycleSteps.forEach((_, index) => {
-        createArrows();
         const angle = ((index + 0.5) / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
         const x = centerX + (radius + 1) * Math.cos(angle);
         const y = centerY + (radius + 1) * Math.sin(angle);
@@ -208,16 +207,22 @@ function createArrows() {
         ]).fill('#888').rotate(180, x, y);
     });
 }
+
+createArrows();
         
 function adjustLayout() {
+    console.log('adjustLayout called');
     const container = document.getElementById('cycle-container');
     const sidebar = document.getElementById('sidebar');
     const isSidebarOpen = sidebar.classList.contains('open');
+    console.log(`Is sidebar open? ${isSidebarOpen}`);
     
     if (isSidebarOpen) {
         container.style.marginRight = '300px';
+        console.log('Container margin adjusted');
     } else {
         container.style.marginRight = '0';
+        console.log('Container margin reset');
     }
 }
 
@@ -231,19 +236,6 @@ function toggleSidebar() {
 adjustLayout();
 
 window.addEventListener('resize', adjustLayout);
-        
-function selectNode(index) {
-    activeIndex = index;
-    const step = cycleSteps[activeIndex];
-    document.getElementById("sidebar-title").textContent = step.name;
-    document.getElementById("sidebar-description").textContent = step.description;
-    document.getElementById("sidebar-metacognitive").textContent = step.metacognitive;
-    document.getElementById("sidebar-collaborative").textContent = step.collaborative;
-    document.getElementById("sidebar-nos").textContent = step.nos;
-    document.getElementById("sidebar-stuck").innerHTML = step.stuck;
-    sidebar.classList.add("open");
-    updateActiveNode();
-}
 
 function updateActiveNode() {
     nodeGroup.children().forEach((node, i) => {
@@ -335,11 +327,28 @@ tooltip.textContent = text;
         }
 
 function selectNodeWithLogging(index) {
+    console.log(`Selecting node: ${cycleSteps[index].name}`);
     logInteraction('selected', cycleSteps[index].name);
     selectNode(index);
     adjustLayout();
+    console.log('Sidebar should now be open');
 }
 
+function selectNode(index) {
+    console.log(`selectNode called with index: ${index}`);
+    activeIndex = index;
+    const step = cycleSteps[activeIndex];
+    document.getElementById("sidebar-title").textContent = step.name;
+    document.getElementById("sidebar-description").textContent = step.description;
+    document.getElementById("sidebar-metacognitive").textContent = step.metacognitive;
+    document.getElementById("sidebar-collaborative").textContent = step.collaborative;
+    document.getElementById("sidebar-nos").textContent = step.nos;
+    document.getElementById("sidebar-stuck").innerHTML = step.stuck;
+    sidebar.classList.add("open");
+    console.log('Sidebar class added: open');
+    updateActiveNode();
+}
+        
 if (typeof document.body.animate === 'function') {
     nodeGroup.children().forEach((node) => {
         node.on('mouseenter', function() {
