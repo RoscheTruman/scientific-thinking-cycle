@@ -200,6 +200,8 @@ cycleSteps.forEach((step, index) => {
     ]).fill('#888');
 });
 
+let activeIndex = null;
+        
         const sidebar = document.getElementById("sidebar");
         const closeBtn = document.querySelector(".close-btn");
 
@@ -231,7 +233,7 @@ function updateActiveNode() {
     nodeGroup.children().forEach((node, i) => {
         const circle = node.children()[0];
         if (i === activeIndex) {
-            circle.stroke({ color: '#0066cc', width: 1.5 });
+            circle.stroke({ color: '#000000', width: 1.5 });
         } else {
             circle.stroke({ color: '#333', width: 0.3 });
         }
@@ -248,18 +250,20 @@ container.addEventListener('keydown', (e) => {
     switch(e.key) {
         case 'ArrowRight':
             e.preventDefault();
-            activeIndex = (activeIndex + 1) % cycleSteps.length;
+            activeIndex = (activeIndex === null) ? 0 : (activeIndex + 1) % cycleSteps.length;
             updateActiveNode();
             break;
         case 'ArrowLeft':
             e.preventDefault();
-            activeIndex = (activeIndex - 1 + cycleSteps.length) % cycleSteps.length;
+            activeIndex = (activeIndex === null) ? cycleSteps.length - 1 : (activeIndex - 1 + cycleSteps.length) % cycleSteps.length;
             updateActiveNode();
             break;
         case 'Enter':
         case ' ':
             e.preventDefault();
-            selectNodeWithLogging(activeIndex);
+            if (activeIndex !== null) {
+                selectNodeWithLogging(activeIndex);
+            }
             break;
     }
 });
@@ -304,6 +308,7 @@ function selectNodeWithLogging(index) {
     selectNode(index);
     interactionCount++;
     hideArrows();
+    updateActiveNode();
 }
 
         // Replace previous selectNode calls with selectNodeWithLogging
