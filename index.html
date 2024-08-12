@@ -230,8 +230,11 @@ function hideArrows() {
 function updateActiveNode() {
     nodeGroup.children().forEach((node, i) => {
         const circle = node.children()[0];
-        const stroke = i === activeIndex ? { color: '#0066cc', width: 1.5 } : { color: '#333', width: 0.3 };
-        circle.stroke(stroke);
+        if (i === activeIndex) {
+            circle.stroke({ color: '#0066cc', width: 1.5 });
+        } else {
+            circle.stroke({ color: '#333', width: 0.3 });
+        }
     });
 }
 
@@ -241,21 +244,25 @@ function updateActiveNode() {
 
     closeBtn.onclick = hideSidebar;
 
-    document.addEventListener('keydown', (e) => {
-        switch(e.key) {
-            case 'ArrowRight':
-                activeIndex = (activeIndex + 1) % cycleSteps.length;
-                selectNode(activeIndex);
-                break;
-            case 'ArrowLeft':
-                activeIndex = (activeIndex - 1 + cycleSteps.length) % cycleSteps.length;
-                selectNode(activeIndex);
-                break;
-            case 'Enter':
-                selectNode(activeIndex);
-                break;
-        }
-    });
+container.addEventListener('keydown', (e) => {
+    switch(e.key) {
+        case 'ArrowRight':
+            e.preventDefault();
+            activeIndex = (activeIndex + 1) % cycleSteps.length;
+            updateActiveNode();
+            break;
+        case 'ArrowLeft':
+            e.preventDefault();
+            activeIndex = (activeIndex - 1 + cycleSteps.length) % cycleSteps.length;
+            updateActiveNode();
+            break;
+        case 'Enter':
+        case ' ':
+            e.preventDefault();
+            selectNodeWithLogging(activeIndex);
+            break;
+    }
+});
 
         function showTooltip(event, text) {
             const tooltip = document.getElementById('tooltip');
