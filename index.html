@@ -143,64 +143,55 @@
         <p id="sidebar-stuck"></p>
     </div>
     <div id="tooltip" class="tooltip"></div>
-    <script>
-        const cycleSteps = [
-            {name:"Wonder",color:"#FFD1DC",description:"Observe the world around you and identify interesting phenomena.",metacognitive:"What aspects of the world around me spark my curiosity? Why do these things interest me?",collaborative:"Share your observations with a classmate. How do their interests differ from or align with yours?",nos:"Scientists often draw inspiration from everyday observations. How does this relate to your own curiosity?",stuck:"Look around your classroom or out the window. What do you see that makes you curious? Try asking <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'What are some interesting scientific phenomena I might observe in a typical classroom?'"},
-            {name:"Question",color:"#FFE5B4",description:"Formulate a specific, testable question about your observation.",metacognitive:"How can I turn my wonder into a specific, answerable question? What do I already know about this topic?",collaborative:"Discuss your question with peers. How can you refine it based on their input?",nos:"Scientific questions are specific and testable. How does your question meet these criteria?",stuck:"Use question starters like What, How, Why, When, Where, or Which. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'How can I turn this observation [your observation] into a testable scientific question?'"},
-            {name:"Hypothesis",color:"#FFFACD",description:"Propose a possible answer to your question based on prior knowledge.",metacognitive:"What do I already know that might help me predict an answer? How confident am I in this prediction?",collaborative:"Share your hypothesis with a group. How do others' hypotheses differ? Why might that be?",nos:"Hypotheses are educated guesses based on existing knowledge. How does your hypothesis reflect this?",stuck:"Try using an 'If...then...' statement to structure your hypothesis. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'Can you help me form a hypothesis for this question: [your question]?'"},
-            {name:"Experiment",color:"#E0FFE0",description:"Design and conduct a fair test to investigate your hypothesis.",metacognitive:"How can I design a fair test? What variables do I need to control?",collaborative:"Work with a partner to review each other's experimental designs. What improvements can you suggest?",nos:"Experiments in science are designed to be repeatable. How does your design ensure this?",stuck:"Consider what materials are available in your classroom. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'What's a simple experiment I can do in a classroom to test this hypothesis: [your hypothesis]?'"},
-            {name:"Collect Data",color:"#D1EEDC",description:"Gather and record observations and measurements from your experiment.",metacognitive:"Am I recording my data accurately and precisely? How can I organize my data effectively?",collaborative:"Compare your data collection methods with a classmate. How can you ensure consistency across observers?",nos:"Scientific data should be objective and replicable. How does your data collection reflect these principles?",stuck:"Use your iPad to create a simple spreadsheet for data collection. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'What's the best way to organize data for this experiment: [brief description of your experiment]?'"},
-            {name:"Analyze",color:"#D1EFF5",description:"Examine your data for patterns, trends, or relationships.",metacognitive:"What patterns do I see in my data? How confident am I in these patterns?",collaborative:"Share your initial analysis with a group. What additional insights do others provide?",nos:"Scientists use various tools and methods to analyze data. What methods are you using and why?",stuck:"Use your iPad to create a simple graph of your data. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'What kind of graph would be best to visualize this data: [brief description of your data]?'"},
-            {name:"Conclude",color:"#E6E6FA",description:"Draw a conclusion based on your analysis and relate it back to your hypothesis.",metacognitive:"How well does my conclusion align with my original hypothesis? What new questions arise?",collaborative:"Engage in a structured debate about your conclusions. How do others' interpretations differ?",nos:"Scientific conclusions are based on evidence and reasoning. How does your conclusion reflect this?",stuck:"Use the claim-evidence-reasoning framework. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'Can you explain how to use the claim-evidence-reasoning framework for this conclusion: [your initial conclusion]?'"},
-            {name:"Present",color:"#D4E6FF",description:"Communicate your findings to others through various means.",metacognitive:"How can I best communicate my findings? What aspects of my study are most important to highlight?",collaborative:"Practice presenting to a peer and ask for feedback. How can you improve your presentation?",nos:"Scientific communication is a crucial part of the scientific process. Why is this important?",stuck:"Use your iPad to create a simple presentation. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'What are the key elements I should include in a presentation about my scientific experiment?'"},
-            {name:"Review",color:"#E6D2FF",description:"Reflect on your process and consider how to improve or extend your investigation.",metacognitive:"What worked well in my investigation? What would I do differently next time?",collaborative:"Exchange feedback with peers on each other's investigations. What can you learn from others' approaches?",nos:"Science is an iterative process. How might you build on or revise your investigation based on what you've learned?",stuck:"Create a list of 'lessons learned' from your investigation. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'Based on this experiment [brief description], what are some ways I could improve or extend this investigation?'"}
-        ];
+<script>
+const cycleSteps = [
+    {name:"Wonder",color:"#FFD1DC",description:"Observe the world around you and identify interesting phenomena.",metacognitive:"What aspects of the world around me spark my curiosity? Why do these things interest me?",collaborative:"Share your observations with a classmate. How do their interests differ from or align with yours?",nos:"Scientists often draw inspiration from everyday observations. How does this relate to your own curiosity?",stuck:"Look around your classroom or out the window. What do you see that makes you curious? Try asking <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'What are some interesting scientific phenomena I might observe in a typical classroom?'"},
+    {name:"Question",color:"#FFE5B4",description:"Formulate a specific, testable question about your observation.",metacognitive:"How can I turn my wonder into a specific, answerable question? What do I already know about this topic?",collaborative:"Discuss your question with peers. How can you refine it based on their input?",nos:"Scientific questions are specific and testable. How does your question meet these criteria?",stuck:"Use question starters like What, How, Why, When, Where, or Which. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'How can I turn this observation [your observation] into a testable scientific question?'"},
+    {name:"Hypothesis",color:"#FFFACD",description:"Propose a possible answer to your question based on prior knowledge.",metacognitive:"What do I already know that might help me predict an answer? How confident am I in this prediction?",collaborative:"Share your hypothesis with a group. How do others' hypotheses differ? Why might that be?",nos:"Hypotheses are educated guesses based on existing knowledge. How does your hypothesis reflect this?",stuck:"Try using an 'If...then...' statement to structure your hypothesis. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'Can you help me form a hypothesis for this question: [your question]?'"},
+    {name:"Experiment",color:"#E0FFE0",description:"Design and conduct a fair test to investigate your hypothesis.",metacognitive:"How can I design a fair test? What variables do I need to control?",collaborative:"Work with a partner to review each other's experimental designs. What improvements can you suggest?",nos:"Experiments in science are designed to be repeatable. How does your design ensure this?",stuck:"Consider what materials are available in your classroom. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'What's a simple experiment I can do in a classroom to test this hypothesis: [your hypothesis]?'"},
+    {name:"Collect Data",color:"#D1EEDC",description:"Gather and record observations and measurements from your experiment.",metacognitive:"Am I recording my data accurately and precisely? How can I organize my data effectively?",collaborative:"Compare your data collection methods with a classmate. How can you ensure consistency across observers?",nos:"Scientific data should be objective and replicable. How does your data collection reflect these principles?",stuck:"Use your iPad to create a simple spreadsheet for data collection. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'What's the best way to organize data for this experiment: [brief description of your experiment]?'"},
+    {name:"Analyze",color:"#D1EFF5",description:"Examine your data for patterns, trends, or relationships.",metacognitive:"What patterns do I see in my data? How confident am I in these patterns?",collaborative:"Share your initial analysis with a group. What additional insights do others provide?",nos:"Scientists use various tools and methods to analyze data. What methods are you using and why?",stuck:"Use your iPad to create a simple graph of your data. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'What kind of graph would be best to visualize this data: [brief description of your data]?'"},
+    {name:"Conclude",color:"#E6E6FA",description:"Draw a conclusion based on your analysis and relate it back to your hypothesis.",metacognitive:"How well does my conclusion align with my original hypothesis? What new questions arise?",collaborative:"Engage in a structured debate about your conclusions. How do others' interpretations differ?",nos:"Scientific conclusions are based on evidence and reasoning. How does your conclusion reflect this?",stuck:"Use the claim-evidence-reasoning framework. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'Can you explain how to use the claim-evidence-reasoning framework for this conclusion: [your initial conclusion]?'"},
+    {name:"Present",color:"#D4E6FF",description:"Communicate your findings to others through various means.",metacognitive:"How can I best communicate my findings? What aspects of my study are most important to highlight?",collaborative:"Practice presenting to a peer and ask for feedback. How can you improve your presentation?",nos:"Scientific communication is a crucial part of the scientific process. Why is this important?",stuck:"Use your iPad to create a simple presentation. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'What are the key elements I should include in a presentation about my scientific experiment?'"},
+    {name:"Review",color:"#E6D2FF",description:"Reflect on your process and consider how to improve or extend your investigation.",metacognitive:"What worked well in my investigation? What would I do differently next time?",collaborative:"Exchange feedback with peers on each other's investigations. What can you learn from others' approaches?",nos:"Science is an iterative process. How might you build on or revise your investigation based on what you've learned?",stuck:"Create a list of 'lessons learned' from your investigation. Ask <a href='https://chat.securly.com/#/chats/newchat' target='_blank'>Scribly</a>: 'Based on this experiment [brief description], what are some ways I could improve or extend this investigation?'"}
+];
 
 const container = document.getElementById('cycle-container');
 const draw = SVG().addTo(container).size('100%', '100%').viewbox(0, 0, 100, 100);
-const centerX = 50, centerY = 50, radius = 40, nodeRadius = 9;
-draw.circle(radius*2).fill('none').stroke({width:0.3,color:'#888'}).center(centerX, centerY);
+const centerX = 50, centerY = 50, radius = 40, nodeRadius = 4.5;
 
 const nodeGroup = draw.group().attr('class', 'node-group');
 const arrowGroup = draw.group().attr('class', 'arrow-group');
 let activeIndex = null;
-let interactionCount = 0;
 
-cycleSteps.forEach((step, index) => {
-    const angle = (index / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
-    const x = centerX + radius * Math.cos(angle), y = centerY + radius * Math.sin(angle);
-    
-    const circle = nodeGroup.circle(nodeRadius*2)
-        .fill(step.color)
-        .center(x, y)
-        .stroke({color:'#333',width:0.3});
-    
-    const text = nodeGroup.text(step.name)
-        .font({size:2.2,anchor:'middle'})
-        .center(x,y);
-    
-    text.build(true);
-    while (text.bbox().width > nodeRadius * 1.8) {
-        text.font({size:text.font('size')*0.9});
-    }
-    
-    const group = nodeGroup.group().add(circle).add(text);
-    group.addClass('node');
-    
-    group.attr('role', 'button')
-        .attr('aria-label', `${step.name} step`)
-        .attr('tabindex', 0);
-});
-
-container.addEventListener('click', function(event) {
-    const clickedElement = event.target.closest('.node');
-    if (clickedElement) {
-        const index = Array.from(nodeGroup.children()).indexOf(clickedElement.instance);
-        selectNodeWithLogging(index);
-    }
-});
+function createNodes() {
+    cycleSteps.forEach((step, index) => {
+        const angle = (index / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
+        const x = centerX + radius * Math.cos(angle);
+        const y = centerY + radius * Math.sin(angle);
         
+        const circle = nodeGroup.circle(nodeRadius * 2)
+            .fill(step.color)
+            .center(x, y)
+            .stroke({color: '#333', width: 0.3});
+        
+        const text = nodeGroup.text(step.name)
+            .font({size: 2.2, anchor: 'middle'})
+            .center(x, y);
+        
+        text.build(true);
+        while (text.bbox().width > nodeRadius * 1.8) {
+            text.font({size: text.font('size') * 0.9});
+        }
+        
+        const group = nodeGroup.group().add(circle).add(text);
+        group.addClass('node');
+        group.data('index', index);
+    });
+}
+
 function createArrows() {
+    const arrowSize = 1;
     cycleSteps.forEach((_, index) => {
         const startAngle = (index / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
         const endAngle = ((index + 1) / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
@@ -210,141 +201,30 @@ function createArrows() {
         const endX = centerX + radius * Math.cos(endAngle);
         const endY = centerY + radius * Math.sin(endAngle);
         
+        const midAngle = (startAngle + endAngle) / 2;
+        const midX = centerX + radius * Math.cos(midAngle);
+        const midY = centerY + radius * Math.sin(midAngle);
+        
+        const arrowX = midX + arrowSize * Math.cos(midAngle - Math.PI / 2);
+        const arrowY = midY + arrowSize * Math.sin(midAngle - Math.PI / 2);
+        
         const path = draw.path()
             .M(startX, startY)
             .A(radius, radius, 0, 0, 1, endX, endY)
             .fill('none')
             .stroke({ color: '#888', width: 0.5 });
         
-        path.marker('end', 2, 2, function(add) {
-            add.path('M 0 0 L 2 1 L 0 2 z').fill('#888');
-        });
+        const arrow = draw.polygon([
+            [arrowX, arrowY],
+            [arrowX - arrowSize * Math.cos(midAngle - Math.PI/6), arrowY - arrowSize * Math.sin(midAngle - Math.PI/6)],
+            [arrowX - arrowSize * Math.cos(midAngle + Math.PI/6), arrowY - arrowSize * Math.sin(midAngle + Math.PI/6)]
+        ]).fill('#888');
         
-        arrowGroup.add(path);
+        arrowGroup.add(path).add(arrow);
     });
-}
-
-createArrows();
-        
-function adjustLayout() {
-    console.log('adjustLayout called');
-    const container = document.getElementById('cycle-container');
-    const sidebar = document.getElementById('sidebar');
-    const isSidebarOpen = sidebar.classList.contains('open');
-    console.log(`Is sidebar open? ${isSidebarOpen}`);
-    
-    if (isSidebarOpen) {
-        container.style.marginRight = '300px';
-        sidebar.style.right = '0px';
-        console.log('Container margin and sidebar position adjusted');
-    } else {
-        container.style.marginRight = '0';
-        sidebar.style.right = '-300px';
-        console.log('Container margin and sidebar position reset');
-    }
-}
-
-function toggleSidebar() {
-    sidebar.classList.toggle('open');
-    adjustLayout();
-}
-
-closeBtn.addEventListener('click', () => {
-    sidebar.classList.remove('open');
-    adjustLayout();
-    sidebar.style.right = '-300px';
-});
-        
-adjustLayout();
-
-window.addEventListener('resize', adjustLayout);
-
-function updateActiveNode() {
-    nodeGroup.children().forEach((node, i) => {
-        if (node.type === 'g' && node.children().length > 0) {
-            const circle = node.children()[0];
-            if (i === activeIndex) {
-                circle.stroke({ color: '#000000', width: 1.5 });
-                circle.node.focus();
-            } else {
-                circle.stroke({ color: '#333', width: 0.3 });
-            }
-        }
-    });
-}
-
-function showTooltip(event, text) {
-    const tooltip = document.getElementById('tooltip');
-    tooltip.textContent = text;
-    tooltip.style.left = `${event.clientX + 10}px`;
-    tooltip.style.top = `${event.clientY + 10}px`;
-    tooltip.style.opacity = 1;
-}
-
-function hideTooltip() {
-    const tooltip = document.getElementById('tooltip');
-    tooltip.style.opacity = 0;
-}
-
-container.addEventListener('keydown', (e) => {
-    if (activeIndex === null) activeIndex = 0;
-    
-    switch(e.key) {
-        case 'ArrowRight':
-            e.preventDefault();
-            selectNodeWithLogging((activeIndex + 1) % cycleSteps.length);
-            break;
-        case 'ArrowLeft':
-            e.preventDefault();
-            selectNodeWithLogging((activeIndex - 1 + cycleSteps.length) % cycleSteps.length);
-            break;
-        case 'Enter':
-        case ' ':
-            e.preventDefault();
-            selectNodeWithLogging(activeIndex);
-            break;
-    }
-});
-
-const sidebar = document.getElementById("sidebar");
-const closeBtn = document.querySelector(".close-btn");
-closeBtn.onclick = () => sidebar.classList.remove("open");
-
-        function showTooltip(event, text) {
-            const tooltip = document.getElementById('tooltip');
-tooltip.textContent = text;
-            tooltip.style.left = `${event.clientX + 10}px`;
-            tooltip.style.top = `${event.clientY + 10}px`;
-            tooltip.style.opacity = 1;
-        }
-
-        function hideTooltip() {
-            const tooltip = document.getElementById('tooltip');
-            tooltip.style.opacity = 0;
-        }
-
-        function adjustFontSize() {
-            const container = document.getElementById('cycle-container');
-            const computedStyle = window.getComputedStyle(container);
-            const width = parseFloat(computedStyle.width);
-            const baseFontSize = width / 50;
-            document.documentElement.style.setProperty('--base-font-size', `${baseFontSize}px`);
-        }
-
-        window.addEventListener('resize', adjustFontSize);
-        adjustFontSize();
-
-        function logInteraction(action, stepName) {
-            console.log(`User ${action} step: ${stepName}`);
-        }
-
-function selectNodeWithLogging(index) {
-    console.log(`Selecting node: ${cycleSteps[index].name}`);
-    selectNode(index);
 }
 
 function selectNode(index) {
-    console.log(`selectNode called with index: ${index}`);
     activeIndex = index;
     const step = cycleSteps[activeIndex];
     document.getElementById("sidebar-title").textContent = step.name;
@@ -353,22 +233,61 @@ function selectNode(index) {
     document.getElementById("sidebar-collaborative").textContent = step.collaborative;
     document.getElementById("sidebar-nos").textContent = step.nos;
     document.getElementById("sidebar-stuck").innerHTML = step.stuck;
-    sidebar.classList.add("open");
-    sidebar.style.right = '0px';
-    console.log('Sidebar opened');
-    updateActiveNode();
+    
+    nodeGroup.children().forEach((node, i) => {
+        if (node.type === 'g') {
+            const circle = node.children()[0];
+            if (i === activeIndex) {
+                circle.stroke({ color: '#000000', width: 1.5 });
+            } else {
+                circle.stroke({ color: '#333', width: 0.3 });
+            }
+        }
+    });
+    
+    toggleSidebar(true);
+}
+
+function toggleSidebar(open) {
+    const sidebar = document.getElementById('sidebar');
+    if (open) {
+        sidebar.classList.add('open');
+        sidebar.style.right = '0px';
+    } else {
+        sidebar.classList.remove('open');
+        sidebar.style.right = '-300px';
+    }
     adjustLayout();
 }
-        
-if (typeof document.body.animate === 'function') {
-    nodeGroup.children().forEach((node) => {
-        node.on('mouseenter', function() {
-            this.animate(200).transform({ scale: 1.1 }, true);
-        }).on('mouseleave', function() {
-            this.animate(200).transform({ scale: 1 }, true);
-        });
-    });
+
+function adjustLayout() {
+    const container = document.getElementById('cycle-container');
+    const sidebar = document.getElementById('sidebar');
+    const isSidebarOpen = sidebar.classList.contains('open');
+    
+    if (isSidebarOpen) {
+        container.style.marginRight = '300px';
+    } else {
+        container.style.marginRight = '0';
+    }
 }
-    </script>
+
+nodeGroup.on('click', function(event) {
+    const clickedElement = event.target.closest('.node');
+    if (clickedElement) {
+        const index = clickedElement.instance.data('index');
+        selectNode(index);
+    }
+});
+
+const closeBtn = document.querySelector(".close-btn");
+closeBtn.addEventListener('click', () => toggleSidebar(false));
+
+createNodes();
+createArrows();
+adjustLayout();
+
+window.addEventListener('resize', adjustLayout);
+</script>
 </body>
 </html>
