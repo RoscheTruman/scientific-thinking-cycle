@@ -190,9 +190,9 @@ cycleSteps.forEach((step, index) => {
         .attr('aria-label', `${step.name} step`)
         .attr('tabindex', 0);
     
-    group.click(() => selectNodeWithLogging(index));
-    group.mouseover((e) => showTooltip(e, step.description));
-    group.mouseout(hideTooltip);
+    group.node.addEventListener('click', () => selectNodeWithLogging(index));
+    group.node.addEventListener('mouseover', (e) => showTooltip(e, step.description));
+    group.node.addEventListener('mouseout', hideTooltip);
 });
 
 function createArrows() {
@@ -202,8 +202,8 @@ function createArrows() {
         const endAngle = ((index + 1) / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
         const midAngle = (startAngle + endAngle) / 2;
         
-        const x = centerX + (radius + 1) * Math.cos(midAngle);
-        const y = centerY + (radius + 1) * Math.sin(midAngle);
+        const x = centerX + radius * Math.cos(midAngle);
+        const y = centerY + radius * Math.sin(midAngle);
         
         arrowGroup.polygon([
             [x, y],
@@ -236,9 +236,18 @@ function adjustLayout() {
 function toggleSidebar() {
     sidebar.classList.toggle('open');
     adjustLayout();
+    if (sidebar.classList.contains('open')) {
+        sidebar.style.right = '0px';
+    } else {
+        sidebar.style.right = '-300px';
+    }
 }
 
-        closeBtn.onclick = () => toggleSidebar();
+closeBtn.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    adjustLayout();
+    sidebar.style.right = '-300px';
+});
         
 adjustLayout();
 
