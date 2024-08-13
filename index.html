@@ -185,31 +185,42 @@ cycleSteps.forEach((step, index) => {
     }
     
     const group = nodeGroup.group().add(circle).add(text);
+    group.addClass('node');
     
     group.attr('role', 'button')
         .attr('aria-label', `${step.name} step`)
         .attr('tabindex', 0);
-    
-    group.node.addEventListener('click', () => selectNodeWithLogging(index));
-    group.node.addEventListener('mouseover', (e) => showTooltip(e, step.description));
-    group.node.addEventListener('mouseout', hideTooltip);
 });
 
+container.addEventListener('click', function(event) {
+    const clickedElement = event.target.closest('.node');
+    if (clickedElement) {
+        const index = Array.from(nodeGroup.children()).indexOf(clickedElement.instance);
+        selectNodeWithLogging(index);
+    }
+});
+        
 function createArrows() {
-    const arrowSize = 3;
     cycleSteps.forEach((_, index) => {
         const startAngle = (index / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
         const endAngle = ((index + 1) / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
-        const midAngle = (startAngle + endAngle) / 2;
         
-        const x = centerX + radius * Math.cos(midAngle);
-        const y = centerY + radius * Math.sin(midAngle);
+        const startX = centerX + radius * Math.cos(startAngle);
+        const startY = centerY + radius * Math.sin(startAngle);
+        const endX = centerX + radius * Math.cos(endAngle);
+        const endY = centerY + radius * Math.sin(endAngle);
         
-        arrowGroup.polygon([
-            [x, y],
-            [x - arrowSize * Math.cos(midAngle - Math.PI/6), y - arrowSize * Math.sin(midAngle - Math.PI/6)],
-            [x - arrowSize * Math.cos(midAngle + Math.PI/6), y - arrowSize * Math.sin(midAngle + Math.PI/6)]
-        ]).fill('#888').rotate(180, x, y);
+        const path = draw.path()
+            .M(startX, startY)
+            .A(radius, radius, 0, 0, 1, endX, endY)
+            .fill('none')
+            .stroke({ color: '#888', width: 0.5 });
+        
+        path.marker('end', 2, 2, function(add) {
+            add.path('M 0 0 L 2 1 L 0 2 z').fill('#888');
+        });
+        
+        arrowGroup.add(path);
     });
 }
 
@@ -236,11 +247,6 @@ function adjustLayout() {
 function toggleSidebar() {
     sidebar.classList.toggle('open');
     adjustLayout();
-    if (sidebar.classList.contains('open')) {
-        sidebar.style.right = '0px';
-    } else {
-        sidebar.style.right = '-300px';
-    }
 }
 
 closeBtn.addEventListener('click', () => {
@@ -267,12 +273,6 @@ function updateActiveNode() {
     });
 }
 
-function hideArrows() {
-    if (interactionCount >= 3) {
-        arrowGroup.children().forEach(arrow => arrow.hide());
-    }
-}
-
 function showTooltip(event, text) {
     const tooltip = document.getElementById('tooltip');
     tooltip.textContent = text;
@@ -284,10 +284,6 @@ function showTooltip(event, text) {
 function hideTooltip() {
     const tooltip = document.getElementById('tooltip');
     tooltip.style.opacity = 0;
-}
-
-function logInteraction(action, stepName) {
-    console.log(`User ${action} step: ${stepName}`);
 }
 
 container.addEventListener('keydown', (e) => {
@@ -344,10 +340,7 @@ tooltip.textContent = text;
 
 function selectNodeWithLogging(index) {
     console.log(`Selecting node: ${cycleSteps[index].name}`);
-    logInteraction('selected', cycleSteps[index].name);
     selectNode(index);
-    adjustLayout();
-    console.log('Sidebar should now be open');
 }
 
 function selectNode(index) {
