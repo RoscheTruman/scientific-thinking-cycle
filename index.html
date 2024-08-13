@@ -198,14 +198,17 @@ cycleSteps.forEach((step, index) => {
 function createArrows() {
     const arrowSize = 3;
     cycleSteps.forEach((_, index) => {
-        const angle = ((index + 0.5) / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
-        const x = centerX + (radius + 1) * Math.cos(angle);
-        const y = centerY + (radius + 1) * Math.sin(angle);
+        const startAngle = (index / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
+        const endAngle = ((index + 1) / cycleSteps.length) * 2 * Math.PI - Math.PI / 2;
+        const midAngle = (startAngle + endAngle) / 2;
+        
+        const x = centerX + (radius + 1) * Math.cos(midAngle);
+        const y = centerY + (radius + 1) * Math.sin(midAngle);
         
         arrowGroup.polygon([
             [x, y],
-            [x - arrowSize * Math.cos(angle - Math.PI/6), y - arrowSize * Math.sin(angle - Math.PI/6)],
-            [x - arrowSize * Math.cos(angle + Math.PI/6), y - arrowSize * Math.sin(angle + Math.PI/6)]
+            [x - arrowSize * Math.cos(midAngle - Math.PI/6), y - arrowSize * Math.sin(midAngle - Math.PI/6)],
+            [x - arrowSize * Math.cos(midAngle + Math.PI/6), y - arrowSize * Math.sin(midAngle + Math.PI/6)]
         ]).fill('#888').rotate(180, x, y);
     });
 }
@@ -221,10 +224,12 @@ function adjustLayout() {
     
     if (isSidebarOpen) {
         container.style.marginRight = '300px';
-        console.log('Container margin adjusted');
+        sidebar.style.right = '0px';
+        console.log('Container margin and sidebar position adjusted');
     } else {
         container.style.marginRight = '0';
-        console.log('Container margin reset');
+        sidebar.style.right = '-300px';
+        console.log('Container margin and sidebar position reset');
     }
 }
 
@@ -347,10 +352,10 @@ function selectNode(index) {
     document.getElementById("sidebar-nos").textContent = step.nos;
     document.getElementById("sidebar-stuck").innerHTML = step.stuck;
     sidebar.classList.add("open");
-    console.log('Sidebar class added: open');
-    console.log('Sidebar classList:', sidebar.classList);
-    console.log('Sidebar style.right:', sidebar.style.right);
+    sidebar.style.right = '0px';
+    console.log('Sidebar opened');
     updateActiveNode();
+    adjustLayout();
 }
         
 if (typeof document.body.animate === 'function') {
